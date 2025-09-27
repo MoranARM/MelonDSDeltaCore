@@ -450,6 +450,24 @@ void ParseTextCode(char* text, int tlen, u32* code, int clen) // or whatever thi
     }
 }
 
+- (nullable NSData *)readMemoryAtAddress:(NSInteger)address size:(NSInteger)size
+{
+    if (NDS::MainRAM == NULL)
+    {
+        return nil;
+    }
+    
+    if (address + size > 0x1000000)
+    {
+        // Beyond RAM bounds, return nil.
+        return nil;
+    }
+    
+    void *bytes = (NDS::MainRAM + address);
+    NSData *data = [NSData dataWithBytesNoCopy:bytes length:size freeWhenDone:NO];
+    return data;
+}
+
 #pragma mark - Inputs -
 
 - (void)activateInput:(NSInteger)input value:(double)value playerIndex:(NSInteger)playerIndex
